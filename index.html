@@ -116,19 +116,22 @@
             for (let i = 0; i < rows.length; i++) {
                 const cells = rows[i].getElementsByTagName('td');
                 const row = [];
-                for (let j = 0; j < cells.length; j++) {
-                    row.push(cells[j].textContent);
-                }
+                
+                // Se for uma linha de dados (não cabeçalho)
+                if (cells.length > 0) {
+                    for (let j = 0; j < cells.length; j++) {
+                        row.push(cells[j].textContent);
+                    }
+                    jsonData.push(row);
+                } 
                 // Se for o cabeçalho, capturamos as células com <th>
-                if (cells.length === 0) {
+                else if (cells.length === 0) {
                     const headerCells = rows[i].getElementsByTagName('th');
                     const headerRow = [];
                     for (let j = 0; j < headerCells.length; j++) {
                         headerRow.push(headerCells[j].textContent);
                     }
                     jsonData.push(headerRow);
-                } else {
-                    jsonData.push(row);
                 }
             }
 
