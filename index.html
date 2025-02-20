@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implantação Linx</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Carregar Arquivo Excel - Implantação LINX</h2>
+    
+    <!-- Formulário para upload do arquivo -->
+    <input type="file" id="file-input" accept=".xlsx, .xls" />
+    
+    <!-- Exibição dos dados lidos do arquivo -->
+    <h3>Conteúdo do Arquivo Excel:</h3>
+    <table id="excel-table">
+        <!-- A tabela será preenchida dinamicamente -->
+    </table>
+
+    <script>
+        // Função para extrair o número de tamanho da descrição
+        function extrairTamanho(descricao) {
+            const regex = /\d{2}\.\d{2}|\d+/;  // Expressão regular para encontrar números no formato XX.XX ou números inteiros
+            const resultado = descricao.match(regex);
+            return resultado ? resultado[0] : '';  // Se encontrado, retorna o número, caso contrário, retorna vazio
+        }
+
+        // Função para lidar com o carregamento do arquivo Excel
+        document.getElementById('file-input').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                // Lê o arquivo Excel
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // Pega a primeira aba do arquivo Excel
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    
+                    // Converte os dados da planilha para JSON, incluindo as colunas vazias
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+                    
+                    // Preenche a tabela com os dados
+                    const table = document.getElementById('excel-table');
+                    table.innerHTML = ''; // Limpa a tabela antes de adicionar os novos dados
+                    
+                    // Cria o cabeçalho da tabela (as colunas)
+                    const headerRow = document.createElement('tr');
+                    jsonData[0].forEach(function(cell) {
+                        const th = document.createElement('th');
+                        th.textContent = cell;
+                        headerRow.appendChild(th);
+                    });
+                    table.appendChild(headerRow);
+                    
+                    // Adiciona as linhas da planilha na tabela HTML
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        
+                        // Aqui, buscamos a descrição que está na segunda coluna (índice 1)
+                        const descricao = row[1];
+                        
+                        // Chamamos a função para extrair o tamanho da descrição
+                        const tamanho = extrairTamanho(descricao);
+                        
+                        // Preenche a célula correspondente à coluna "Tamanho" (por exemplo, a 17ª coluna, índice 16)
+                        row[16] = tamanho;  // Supondo que a coluna 17 seja a "Tamanho"
+                        
+                        const tr = document.createElement('tr');
+                        
+                        row.forEach(function(cell) {
+                            const td = document.createElement('td');
+                            td.textContent = cell;
+                            tr.appendChild(td);
+                        });
+                        
+                        table.appendChild(tr);
+                    }
+                };
+                
+                reader.readAsArrayBuffer(file);
+            }
+        });
+    </script>
+
+</body>
+</html>
