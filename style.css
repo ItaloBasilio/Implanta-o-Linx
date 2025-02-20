@@ -1,3 +1,25 @@
-h2{
-    color: red;
+#file-input {
+    background-color: #4CAF50;  /* Cor de fundo */
+    color: white;                /* Cor do texto */
+    padding: 10px 20px;          /* Padding para aumentar o tamanho */
+    border: none;                /* Remove a borda */
+    border-radius: 5px;          /* Bordas arredondadas */
+    cursor: pointer;             /* Cursor de pointer ao passar o mouse */
+}
+
+#file-input:hover {
+    background-color: #45a049;   /* Cor do fundo ao passar o mouse */
+}
+
+#download-btn{
+    background-color: #4CAF50;  /* Cor de fundo */
+    color: white;
+    border: none;
+    padding: 10px 10px 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#download-btn:hover{
+    background-color: #326e34;  /* Cor de fundo */
 }
