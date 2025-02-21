@@ -44,6 +44,17 @@
             return resultado ? resultado[0] : '';  // Se encontrado, retorna o número, caso contrário, retorna vazio
         }
 
+        // Função para extrair a cor da descrição
+        function extrairCor(descricao) {
+            const cores = ["Preto", "Branco", "Azul", "Vermelho", "Verde", "Amarelo", "Rosa", "Cinza", "Marrom", "Laranja", "Roxo"];
+            for (let cor of cores) {
+                if (descricao.includes(cor)) {
+                    return cor;
+                }
+            }
+            return '';
+        }
+
         // Função para lidar com o carregamento do arquivo Excel
         document.getElementById('file-input').addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -86,8 +97,12 @@
                         // Chamamos a função para extrair o tamanho da descrição
                         const tamanho = extrairTamanho(descricao);
                         
-                        // Preenche a célula correspondente à coluna "Tamanho" (por exemplo, a 17ª coluna, índice 16)
+                        // Chamamos a função para extrair a cor da descrição
+                        const cor = extrairCor(descricao);
+                        
+                        // Preenche as células correspondentes às colunas "Tamanho" e "Cor"
                         row[16] = tamanho;  // Supondo que a coluna 17 seja a "Tamanho"
+                        row[17] = cor;      // Supondo que a coluna 18 seja a "Cor"
                         
                         const tr = document.createElement('tr');
                         
